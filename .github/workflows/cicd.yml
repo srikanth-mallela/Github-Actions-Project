@@ -9,15 +9,35 @@ jobs:
   compile:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      -name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Java
+      -name: Setup Java
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
 
-      - name: Build with Maven
+      -name: Build with Maven
         run: mvn clean compile
+  Security-check:
+    runs-on: ubuntu-latest
+    steps:
+      -name: checkout code
+        uses: actions/checkout@v4
+      -name: install trivy
+        run: |
+              sudo apt-get install wget apt-transport-https gnupg lsb-release
+              wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+              echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+              sudo apt-get update -y
+              sudo apt-get install trivy -y
+      -name: trivy fs scan
+        run: trivy fs scan --format table -o fs-report.json .
+      -name: gitleaks install
+        run: sudo apt install gitleaks -y
+      -name: gitleaks code scan
+        run: gitleaks detect source . -r gitleaks-report.json -f json
+        
+
