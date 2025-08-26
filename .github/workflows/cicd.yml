@@ -2,17 +2,22 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
+
 jobs:
   compile:
     runs-on: ubuntu-latest
     steps:
-      -uses: actions/checkout@v4
-      -name: setup java
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-    - name: Build with Maven
-      run: maven clean compile
+
+      - name: Build with Maven
+        run: mvn clean compile
