@@ -67,6 +67,11 @@ jobs:
           cache: maven
       - name: Build project
         run: mvn package
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-jar
+          path: app
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
