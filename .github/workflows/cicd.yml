@@ -41,6 +41,7 @@ jobs:
         run: gitleaks detect -s . -r gitleaks-report.json -f json
   test:
     runs-on: self-hosted
+    needs: security-check
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
